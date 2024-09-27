@@ -47,7 +47,7 @@ const resolvers = {
 
     Review:{
         author(parent){
-            return db.authors.filter((r)=> r.id === parent.author.id)
+            return db.reviews.filter((r)=> parent.id === r.auth_id)
         }
     }    
         
