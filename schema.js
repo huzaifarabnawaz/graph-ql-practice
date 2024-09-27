@@ -3,21 +3,22 @@ type Game{
     id:ID!
     title:String!
     platform:[String!]!
-    reviews:[Review!]
+    reviews:[Review!]!
 }
 
 type Review{
     id:ID!
     rating:Int! 
     content:String!
-    author:[Author!]
+    game:Game!
+    author:Author!
 }
 
 type Author{
     id:ID!
     name:String!
     verified:Boolean!
-    review:[Review!]
+    review:[Review!]    
 }
 
 type Query{
@@ -28,5 +29,23 @@ type Query{
     author(id:ID):Author
     authors:[Author]
 }
+
+type Mutation{
+    addgame(game: addgameinput!):Game
+    deletegame(id:ID!):[Game]
+    updategame(id:ID!,edit:updategamesinput!):Game
+}
+
+input addgameinput{
+    title:String!
+    platform:[String!]!
+}
+
+input updategamesinput{
+    title:String!
+    platform:[String!]!
+}
+
+
 
 `
