@@ -20,4 +20,4 @@ let reviews = [
     {id: '7', rating: 10, content: 'lorem ipsum', author_id: '3', game_id: '1'}
 ];
 
-export default { games, authors, reviews }
+module.exports={ games, authors, reviews }

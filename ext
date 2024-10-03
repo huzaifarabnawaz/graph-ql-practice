@@ -1,0 +1,41 @@
+const bcrypt = require('bcrypt');
+const knex = require('./knex'); 
+
+const resolvers = {
+  Mutation: {
+    addUser: async (_, { input }) => {
+      const { name, email, password } = input;
+
+      
+      
+      const existingUser = await knex('users')
+      .where({ email })
+      .first();
+      
+      if (existingUser) {
+        throw new Error('Email already in use');
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      
+      const newUser = await knex('users')
+        .insert({
+          name,
+          email,
+          password: hashedPassword,
+        })
+
+        .returning(['id', 'name', 'email', 'created_at']);
+
+      return {
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email,
+        createdAt: newUser.created_at,
+      };
+    },
+  },
+};
+
+module.exports = resolvers;
