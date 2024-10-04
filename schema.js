@@ -62,7 +62,6 @@ type authpayload{
   loginuse:loginUsers
 }
 
-# types of error 
 
 type Mutation {
   signup(input:AddUser!):signUpRes!

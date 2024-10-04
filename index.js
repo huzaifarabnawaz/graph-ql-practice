@@ -3,16 +3,34 @@ const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
 const { typeDefs } = require("./schema");
 const { resolvers } = require("./user/user");
+const { authenticateToken } = require("./authintication/isauth");
 
 const server = new ApolloServer({
   typeDefs,
-  resolvers
+  resolvers,
+
+  context: async ({ req }) => {
+    const token = req.headers.authorization || "";
+    let user = null;
+
+    if (token) {
+      try {
+        user = await authenticateToken(token.split(" ")[1]);
+      } catch (error) {
+        console.log(error);
+        console.log("Authentication failed");
+        throw error;
+      }
+    }
+
+    return { user };
+  },
 });
 
 const startServer = async () => {
   try {
     const { url } = await startStandaloneServer(server, {
-      listen: { port: 4000 }
+      listen: { port: 4000 },
     });
     console.log(`Server is running at ${url}`);
   } catch (error) {
@@ -21,30 +39,3 @@ const startServer = async () => {
 };
 
 startServer();
-
-
-
-
-
-// import "dotenv/config"
-
-// import { ApolloServer } from "@apollo/server";
-// import { startStandaloneServer } from "@apollo/server/standalone";
-// import { resolvers } from "./graphql/resolvers.js";
-// import { typeDefs } from "./graphql/typeDefs.js";
-
-// const PORT = process.env.PORT || 4000
-
-
-
-// const server = new ApolloServer({
-//     typeDefs,
-//     resolvers
-// })
-
-// const { url } = await startStandaloneServer(server, {
-//     context: async ({ req, res }) => ({ token: req.headers.authorization, cookies: res }),
-//     listen: { port: PORT } 
-// })
-
-// console.log(`Running at ${url}`)

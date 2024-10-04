@@ -3,6 +3,7 @@ const knexdb = require("../dbconnection/dbconnection");
 const uuid = require("uuid");
 const jwt = require("jsonwebtoken");
 const {jwtsecretkey} = require("../constent");
+const { Query, errorMonitor } = require("pg/lib/client");
 
 const resolvers = {
   Mutation: {
@@ -98,7 +99,11 @@ const resolvers = {
         throw new Error("Internal server error");
       }
     }
-  }
+
+  },
+
+
+
 };
 
 module.exports = { resolvers };
