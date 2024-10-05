@@ -1,42 +1,35 @@
-const {jwtsecretkey}=require("../constent")
-const knexdb=require("../dbconnection/dbconnection")
+const jwt = require('jsonwebtoken');
+const { jwtsecretkey } = require("../constent"); 
+const knexdb = require("../dbconnection/dbconnection");
 
-export const authenticateToken = async (token) => {
-    if (token) {
-        try {
+const authenticateToken =async (token) => {
+  try {
+    
+    const decoded =jwt.verify(token,jwtsecretkey);
+    
+    const{id}=decoded
+    console.log(id)
 
-            const decodedToken = jwt.verify(token,jwtsecretkey);
+    const user = await knexdb("users")
+    .where("id",id)
+    .first();
+    
+    console.log(user)
 
-            const {id}=decodedToken
-
-            const user=await knexdb("users")
-            .where("id",id)
-            .first()
-
-
-            if (!user) {
-                return{
-                    error:{
-                        message:"this is invalid user"
-                    }
-                }
-            }
-
-
-            return{
-                name:user.name,
-                email:user.email,
-                password:user.password
-            }
-
-
-
-        } catch (error) {
-            console.log('Token verification failed:', error.message);
-            throw new Error('Authentication failed');
-        }
+    if (!user) {
+        console.log("check the user data")
+      throw new Error("Invalid user");
     }
-    throw new Error('No token provided');
+
+    return user;  
+
+  } catch (error) {
+    console.log("JWT Verification Error:", error.message);
+    throw new Error("Authentication failed");
+  }
 };
 
-module.exports={authenticateToken}
+module.exports = { authenticateToken };
+
+
+

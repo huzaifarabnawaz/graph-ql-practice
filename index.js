@@ -1,4 +1,4 @@
-// server.js
+
 const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
 const { typeDefs } = require("./schema");
@@ -15,7 +15,9 @@ const server = new ApolloServer({
 
     if (token) {
       try {
+        
         user = await authenticateToken(token.split(" ")[1]);
+        console.log(user)
       } catch (error) {
         console.log(error);
         console.log("Authentication failed");
@@ -23,7 +25,11 @@ const server = new ApolloServer({
       }
     }
 
-    return { user };
+    return {
+      name:user.name,
+      email:user.email,
+      password:user.password
+    };  
   },
 });
 

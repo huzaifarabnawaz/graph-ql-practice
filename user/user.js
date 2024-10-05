@@ -3,7 +3,6 @@ const knexdb = require("../dbconnection/dbconnection");
 const uuid = require("uuid");
 const jwt = require("jsonwebtoken");
 const {jwtsecretkey} = require("../constent");
-const { Query, errorMonitor } = require("pg/lib/client");
 
 const resolvers = {
   Mutation: {
@@ -30,7 +29,7 @@ const resolvers = {
         
         const passwordHash = await bcrypt.hash(password, 10);
 
-        const [newUser] = await knexdb("users")
+        const newUser = await knexdb("users")
           .insert({
             id: uuid.v4(),
             name: name,
@@ -83,7 +82,7 @@ const resolvers = {
         }
 
         
-        const token = jwt.sign({ id: user.id }, jwtsecretkey);
+       const token = jwt.sign({ id: user.id }, jwtsecretkey);
 
         console.log(user)
         return {
@@ -103,7 +102,30 @@ const resolvers = {
   },
 
 
+  Query: {
+    me:(_,{user}) => {
+
+
+      if (!user) {
+        return{
+          error:{
+            message:"this user not authinticated"
+          }
+        }
+      }
+
+      return {
+        token,
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        password: user.password, 
+      };
+  
+    },
+  },
+
 
 };
 
-module.exports = { resolvers };
+module.exports = { resolvers};
