@@ -3,7 +3,7 @@ const typeDefs = `#graphql
 # signup 
 
 type User {  
-  id: ID!
+  id: ID
   name: String!
   email: String!
   password: String!
@@ -43,7 +43,7 @@ type loginRes {
   name: String
   email: String
   password: String
-  token: String!
+  token: String
   error: ErrorType
 }
 
@@ -55,7 +55,7 @@ input userlogin {
 
 type authpayload {
   token: String!
-  loginuse: loginUsers
+  loginuse:loginUsers
 }
 
 type Mutation {
@@ -68,7 +68,7 @@ type Query {
   user(id: ID!): User
   usersLogin: [loginUsers]
   login(input: userlogin!): authpayload!
-  me:[loginRes]
+  me:User!
 }
 `;  
 
